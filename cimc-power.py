@@ -74,8 +74,8 @@ powerstate = response.text[pstate:pstate+15]
 #
 
 print(f'Current Power State: {powerstate}<br>')
-print(f'<a href="http://{host}/cgi-bin/cimc-power.py?setpower=up">Power On</a><br>')
-print(f'<a href="http://{host}/cgi-bin/cimc-power.py?setpower=down">Power Off</a><br>')
+print(f'<a href="/cgi-bin/cimc-power.py?setpower=up">Power On</a><br>')
+print(f'<a href="/cgi-bin/cimc-power.py?setpower=down">Power Off</a><br>')
 
 #
 # LOGOUT
