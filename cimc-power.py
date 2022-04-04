@@ -18,10 +18,10 @@ PASSWORD = 'password'
 # LOGIN
 #
 
-basicauth = 'Basic ' + base64.b64encode('{}:{}'.format(USER,PASSWORD).encode('utf-8')).decode('utf-8')
-url = "https://{}/nuova".format(host)
+basicauth = 'Basic ' + base64.b64encode(f'{USER}:{PASSWORD}'.encode('utf-8')).decode('utf-8')
+url = f'https://{host}/nuova'
 
-payload = "<aaaLogin inName='{}' inPassword='{}' />".format(USER,PASSWORD)
+payload = f"<aaaLogin inName='{USER}' inPassword='{PASSWORD}' />".format(USER,PASSWORD)
 headers = {
   'Authorization': basicauth,
   'Content-Type': 'text/plain'
@@ -47,22 +47,22 @@ try:
 except:
   print('No power change requested.<br>')
 else:
-  payload = """
-    <configConfMo cookie='{}' inHierarchical='false'  dn='sys/rack-unit-1' >
+  payload = f"""
+    <configConfMo cookie='{cookie}' inHierarchical='false'  dn='sys/rack-unit-1' >
       <inConfig>
-        <computeRackUnit adminPower='{}' dn='sys/rack-unit-1'>
+        <computeRackUnit adminPower='{action}' dn='sys/rack-unit-1'>
         </computeRackUnit>
       </inConfig>
-    </configConfMo>""".format(cookie,action)
+    </configConfMo>"""
   response = requests.request("POST", url, headers=headers, data = payload, verify=False)
 
 #
 # GET POWER STATE
 #
 
-payload = """
-  <configResolveClass cookie="{}"
-  inHierarchical="false" classId="computeRackUnit"/>""".format(cookie)
+payload = f"""
+  <configResolveClass cookie="{cookie}"
+  inHierarchical="false" classId="computeRackUnit"/>"""
 
 response = requests.request("POST", url, headers=headers, data = payload, verify=False)
 
@@ -73,17 +73,15 @@ powerstate = response.text[pstate:pstate+15]
 # WEB PAGE
 #
 
-print('Current Power State: {}<br>'.format(powerstate))
-print('<a href="http://192.168.1.61/cgi-bin/cimc-power.py?setpower=up">Power On</a><br>')
-print('<a href="http://192.168.1.61/cgi-bin/cimc-power.py?setpower=down">Power Off</a><br>')
+print(f'Current Power State: {powerstate}<br>')
+print(f'<a href="http://{host}/cgi-bin/cimc-power.py?setpower=up">Power On</a><br>')
+print(f'<a href="http://{host}/cgi-bin/cimc-power.py?setpower=down">Power Off</a><br>')
 
 #
 # LOGOUT
 #
 
-payload = "<aaaLogout inCookie='{}' />".format(cookie)
+payload = f"<aaaLogout inCookie='{cookie}' />"
 
 response = requests.request("POST", url, headers=headers, data = payload, verify=False).text
-
-# print('<br><xmp>',response,'</xmp><br>')
 
